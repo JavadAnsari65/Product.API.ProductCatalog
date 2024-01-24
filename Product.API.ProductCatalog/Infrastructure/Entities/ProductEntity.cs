@@ -5,9 +5,9 @@ namespace Product.API.ProductCatalog.Infrastructure.Entities
 {
     public class ProductEntity
     {
-        //Properties
         [Key]
         public Guid ProductId { get; set; }
+        public int ProductCatId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }

@@ -6,6 +6,7 @@ namespace Product.API.ProductCatalog.DTO.InternalAPI.Response
     public class ProductResponse
     {
         public Guid ProductId { get; set; }
+        public int ProductCatId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }

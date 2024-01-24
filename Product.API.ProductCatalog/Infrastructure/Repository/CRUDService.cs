@@ -89,8 +89,10 @@ namespace Product.API.ProductCatalog.Infrastructure.Repository
             try
             {
                 // به روزرسانی ویژگی‌های محصول با اطلاعات ارسالی از درخواست
+                existProduct.ProductCatId = updatedProduct.ProductCatId;
                 existProduct.Name = updatedProduct.Name;
                 existProduct.Description = updatedProduct.Description;
+                existProduct.Price = updatedProduct.Price;
                 existProduct.CreateDate = updatedProduct.CreateDate;
                 existProduct.UpdateDate = DateTime.Now;
                 existProduct.IsApproved = updatedProduct.IsApproved;

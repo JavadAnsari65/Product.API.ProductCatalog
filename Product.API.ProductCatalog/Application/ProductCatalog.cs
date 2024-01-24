@@ -21,8 +21,8 @@ namespace Product.API.ProductCatalog.Application
             _crudServices = addService;
         }
 
-        //public List<ProductEntity> GetAllProduct()
-        public List<ProductResponse> GetAllProduct()
+        //public List<ProductResponse> GetAllProduct()
+        public List<ProductEntity> GetAllProduct()
         {
             var products = _crudServices.GetAllProductOfDB();
             foreach (var product in products)
@@ -33,9 +33,9 @@ namespace Product.API.ProductCatalog.Application
                 }
             }
 
-            var productList = _mapper.Map<List<ProductResponse>>(products);
-            return productList;
-            //return products;
+            //var productList = _mapper.Map<List<ProductResponse>>(products);
+            //return productList;
+            return products;
         }
 
         public ProductResponse AddProduct(ProductRequest product)

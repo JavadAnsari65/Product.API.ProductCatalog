@@ -7,8 +7,8 @@ namespace Product.API.ProductCatalog.Application
 {
     public interface IProductCatalog
     {
-        public List<ProductResponse> GetAllProduct();
-        //public List<ProductEntity> GetAllProduct();
+        //public List<ProductResponse> GetAllProduct();
+        public List<ProductEntity> GetAllProduct();
 
         public ProductResponse AddProduct(ProductRequest product);
         public ProductResponse UpdateProduct(Guid productId, ProductResponse product);
