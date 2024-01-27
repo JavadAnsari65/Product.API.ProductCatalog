@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Product.API.ProductCatalog.DTO.InternalAPI.Embeded;
 using Product.API.ProductCatalog.DTO.InternalAPI.Request;
 using Product.API.ProductCatalog.DTO.InternalAPI.Response;
+using Product.API.ProductCatalog.Extensions.ExtraClasses;
 using Product.API.ProductCatalog.Extensions.SearchClasses;
 using Product.API.ProductCatalog.Infrastructure.Entities;
 using Product.API.ProductCatalog.Infrastructure.Repository;
 using Product.API.ProductCatalog.wwwroot.StaticFiles;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Product.API.ProductCatalog.Application
@@ -21,74 +23,116 @@ namespace Product.API.ProductCatalog.Application
             _crudServices = addService;
         }
 
-        //public List<ProductResponse> GetAllProduct()
-        public List<ProductEntity> GetAllProduct()
+        //public ApiResponse<List<ProductEntity>> GetAllProduct()
+        public ApiResponse<List<ProductResponse>> GetAllProduct()
         {
-            var products = _crudServices.GetAllProductOfDB();
-            foreach (var product in products)
+            try
             {
-                foreach (var image in product.Images)
+                var getProducts = _crudServices.GetAllProductOfDB();
+                
+                foreach (var product in getProducts)
                 {
-                    image.ImageUrl = StaticUrls.ProductImageUrl + image.ImageUrl;
-                }
-            }
-
-            //var productList = _mapper.Map<List<ProductResponse>>(products);
-            //return productList;
-            return products;
-        }
-
-        public ProductResponse AddProduct(ProductRequest product)
-        {
-            if (product != null)
-            {
-                //تولید شناسه یکتا برای محصول
-                Guid productId = Guid.NewGuid();
-
-                // بارگیری و ذخیره تصاویر بیشتر در جدول Images 
-                var additionalImages = new List<ImageEntity>();
-                foreach (var image in product.Images.Images)
-                {
-                    //Save Image with base64
-                    var base64 = image.ImageUrl.Split(',')[1];
-                    var bytes = System.Convert.FromBase64String(base64);
-                    var randName = Guid.NewGuid().ToString();
-
-                    additionalImages.Add(new ImageEntity
+                    foreach (var image in product.Images)
                     {
-                        ProductId = productId,
-                        Caption = image.Caption,
-                        ImageUrl = randName+".png"
-                    });
-
-                    //Save Image on Server
-                    var path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", 
-                        StaticUrls.ProductImageUrl + randName + ".png");
-                    System.IO.File.WriteAllBytes(path, bytes);
+                        image.ImageUrl = StaticUrls.ProductImageUrl + image.ImageUrl;
+                    }
                 }
+                var products = _mapper.Map<List<ProductResponse>>(getProducts);
 
-                var newProduct = _mapper.Map<ProductEntity>(product);
-                newProduct.ProductId = productId;
-                newProduct.Images = additionalImages;
-                newProduct.CreateDate = DateTime.Now;
-                newProduct.UpdateDate = DateTime.Now;
-                newProduct.IsApproved = true;
-
-                var addResult = _crudServices.AddProductToDB(newProduct);
-
-                if (addResult == "Success")
+                return new ApiResponse<List<ProductResponse>>
                 {
-                    var productResult = _mapper.Map<ProductResponse>(newProduct);
-                    return productResult;
-                }
-                else if (addResult == "Fail")
-                {
-                    return GetErrorResponse("Add Product is failure");
-                }
+                    Result = true,
+                    Data = products
+                };
             }
-            return GetErrorResponse("Input Product is Null"); 
+            catch (Exception ex)
+            {
+                return new ApiResponse<List<ProductResponse>>
+                {
+                    Result = false,
+                    ErrorMessage = ex.Message
+                };
+            }
         }
 
+        public ApiResponse<ProductResponse> AddProduct(ProductRequest product)
+        {
+            try
+            {
+                if (product != null)
+                {
+                    //تولید شناسه یکتا برای محصول
+                    Guid productId = Guid.NewGuid();
+
+                    // بارگیری و ذخیره تصاویر بیشتر در جدول Images 
+                    var additionalImages = new List<ImageEntity>();
+                    foreach (var image in product.Images.Images)
+                    {
+                        //Save Image with base64
+                        var base64 = image.ImageUrl.Split(',')[1];
+                        var bytes = System.Convert.FromBase64String(base64);
+                        var randName = Guid.NewGuid().ToString();
+
+                        additionalImages.Add(new ImageEntity
+                        {
+                            ProductId = productId,
+                            Caption = image.Caption,
+                            ImageUrl = randName + ".png"
+                        });
+
+                        //Save Image on Server
+                        var path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",
+                            StaticUrls.ProductImageUrl + randName + ".png");
+                        System.IO.File.WriteAllBytes(path, bytes);
+                    }
+
+                    var newProduct = _mapper.Map<ProductEntity>(product);
+                    newProduct.ProductId = productId;
+                    newProduct.Images = additionalImages;
+                    newProduct.CreateDate = DateTime.Now;
+                    newProduct.UpdateDate = DateTime.Now;
+                    newProduct.IsApproved = true;
+
+                    var addResult = _crudServices.AddProductToDB(newProduct);
+
+                    if (addResult.Result)
+                    {
+                        // اگر .Data رو نذاری خالی برمیگردونه
+                        var mapAddResult = _mapper.Map<ProductResponse>(addResult.Data);
+                        return new ApiResponse<ProductResponse>
+                        {
+                            Result = addResult.Result,
+                            Data = mapAddResult
+                        };
+                    }
+                    else
+                    {
+                        return new ApiResponse<ProductResponse>
+                        {
+                            Result = false,
+                            ErrorMessage = addResult.ErrorMessage
+                        };
+                    }
+                }
+                else
+                {
+                    return new ApiResponse<ProductResponse>
+                    {
+                        Result = false,
+                        ErrorMessage = "The input product cannot be null"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<ProductResponse>
+                {
+                    Result = false,
+                    ErrorMessage = ex.Message
+                };
+            }
+
+        }
 
         public ProductResponse UpdateProduct(Guid productId, ProductResponse product)
         {
@@ -113,24 +157,54 @@ namespace Product.API.ProductCatalog.Application
             return GetErrorResponse("Error: Unexpected condition");
         }
 
-        
-        public ProductResponse DeleteProduct(Guid productId)
+
+        public ApiResponse<ProductResponse> DeleteProduct(ProductIdRequest delProduct)
         {
-            var foundProduct = _crudServices.FindProductByIdInDB(productId);
-            if (foundProduct != null)
+            try
             {
-                var product = _mapper.Map<ProductEntity>(foundProduct);
-                var result = _crudServices.DeleteProductOfDB(product);
-                if(result == "DeleteSuccess")
+                var productId = delProduct.ProductId;
+                var foundProduct = _crudServices.FindProductByIdInDB(productId);
+
+                if(foundProduct != null)
                 {
-                    return GetErrorResponse($"Delete Product with ID {productId} Success.");
+                    var product = _mapper.Map<ProductEntity>(foundProduct);
+                    var result = _crudServices.DeleteProductOfDB(product);
+
+                    if (result.Result)
+                    {
+                        var mapResult = _mapper.Map<ProductResponse>(result.Data);
+                        return new ApiResponse<ProductResponse>
+                        {
+                            Result = result.Result,
+                            Data = mapResult
+                        };
+                    }
+                    else
+                    {
+                        return new ApiResponse<ProductResponse>
+                        {
+                            Result = result.Result,
+                            ErrorMessage = result.ErrorMessage
+                        };
+                    }  
                 }
                 else
                 {
-                    return GetErrorResponse($"Delete Product with ID {productId} Failed.");
+                    return new ApiResponse<ProductResponse>
+                    {
+                        Result = false,
+                        ErrorMessage = "The Product is not found!"
+                    };
                 }
             }
-            return GetErrorResponse($"The ProductId with ID {productId} is not found!");
+            catch (Exception ex)
+            {
+                return new ApiResponse<ProductResponse>
+                {
+                    Result = false,
+                    ErrorMessage = ex.Message
+                };
+            }
         }
         
         private ProductResponse GetErrorResponse(string errorMessage)

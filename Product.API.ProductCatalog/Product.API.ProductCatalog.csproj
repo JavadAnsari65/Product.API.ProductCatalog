@@ -30,9 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTO\ExternalAPI\Embeded\" />
-    <Folder Include="DTO\ExternalAPI\Request\" />
-    <Folder Include="DTO\ExternalAPI\Response\" />
     <Folder Include="Extensions\Middlewares\" />
     <Folder Include="wwwroot\StaticFiles\ProductImages\" />
   </ItemGroup>

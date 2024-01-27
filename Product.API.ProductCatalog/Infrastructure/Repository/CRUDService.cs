@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Product.API.ProductCatalog.DTO.InternalAPI.Embeded;
 using Product.API.ProductCatalog.DTO.InternalAPI.Request;
 using Product.API.ProductCatalog.DTO.InternalAPI.Response;
+using Product.API.ProductCatalog.Extensions.ExtraClasses;
 using Product.API.ProductCatalog.Extensions.SearchClasses;
 using Product.API.ProductCatalog.Infrastructure.Configuration;
 using Product.API.ProductCatalog.Infrastructure.Entities;
@@ -30,19 +31,26 @@ namespace Product.API.ProductCatalog.Infrastructure.Repository
             return products;
         }
 
-        public string AddProductToDB(ProductEntity product)
+        public ApiResponse<ProductEntity> AddProductToDB(ProductEntity product)
         {
             try
             {
                 _dbContext.Products.Add(product);
                 _dbContext.SaveChanges();
 
-                return ("Success");
+                return new ApiResponse<ProductEntity>
+                {
+                    Result = true,
+                    Data = product
+                };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                return ("Fail");
+                return new ApiResponse<ProductEntity>
+                {
+                    Result = false,
+                    ErrorMessage = ex.Message,
+                };
             }
         }
 
@@ -111,17 +119,26 @@ namespace Product.API.ProductCatalog.Infrastructure.Repository
 
         }
         
-        public string DeleteProductOfDB(ProductEntity product)
+        public ApiResponse<ProductEntity> DeleteProductOfDB(ProductEntity product)
         {
             try
             {
                 _dbContext.Products.Remove(product);
                 _dbContext.SaveChanges();
-                return ("DeleteSuccess");
+
+                return new ApiResponse<ProductEntity>
+                {
+                    Result = true,
+                    Data = product
+                };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return ("DeleteFailed");
+                return new ApiResponse<ProductEntity>
+                {
+                    Result = false,
+                    ErrorMessage = ex.Message
+                };
             }
         }
         
