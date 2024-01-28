@@ -10,6 +10,6 @@ namespace Product.API.ProductCatalog.DTO.ExternalAPI.Request
         public decimal Price { get; set; }
 
         //public ProductEmbeded Images { get; set; }
-        public List<ImageRequest> Images { get; set; }
+        public List<ProductEmbeded> Images { get; set; }
     }
 }

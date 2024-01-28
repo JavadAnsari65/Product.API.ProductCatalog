@@ -14,8 +14,10 @@ namespace Product.API.ProductCatalog.Application
         public ApiResponse<ProductResponse> AddProduct(ProductRequest product);
         //public ProductResponse UpdateProduct(Guid productId, ProductResponse product);
         public ApiResponse<ProductResponse> UpdateProduct(Guid productId, ProductRequest product);
-        public ApiResponse<ProductResponse> DeleteProduct(ProductIdRequest delProduct);
+        //public ApiResponse<ProductResponse> DeleteProduct(ProductIdRequest delProduct);
+        public ApiResponse<ProductResponse> DeleteProduct(Guid productId);
         public IQueryable<ProductEntity> CreateQuery();
-        public List<ProductResponse> SearchProduct(string fieldName, string fieldValue);
+        //public List<ProductResponse> SearchProduct(string fieldName, string fieldValue);
+        public ApiResponse<List<ProductResponse>> SearchProduct(string fieldName, string fieldValue);
     }
 }

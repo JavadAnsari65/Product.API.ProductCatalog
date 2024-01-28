@@ -185,11 +185,12 @@ namespace Product.API.ProductCatalog.Application
         }
 
 
-        public ApiResponse<ProductResponse> DeleteProduct(ProductIdRequest delProduct)
+        //public ApiResponse<ProductResponse> DeleteProduct(ProductIdRequest delProduct)
+        public ApiResponse<ProductResponse> DeleteProduct(Guid productId)
         {
             try
             {
-                var productId = delProduct.ProductId;
+                //var productId = delProduct.ProductId;
                 var foundProduct = _crudServices.FindProductByIdInDB(productId);
 
                 if(foundProduct.Result)
@@ -234,51 +235,64 @@ namespace Product.API.ProductCatalog.Application
             }
         }
         
-        private ProductResponse GetErrorResponse(string errorMessage)
-        {
-            return new ProductResponse
-            {
-                ProductId = Guid.Empty,
-                Name = errorMessage,
-                Description = string.Empty,
-                CreateDate = DateTime.MinValue,
-                UpdateDate = DateTime.MinValue,
-                IsApproved = false,
-                Images = new ProductEmbeded(),
-            };
-        }
-        
         public IQueryable<ProductEntity> CreateQuery()
         {
             var query = _crudServices.CreateQueryFromDB();
             return query;
         }
 
-        public List<ProductResponse> SearchProduct(string fieldName, string fieldValue)
+        public ApiResponse<List<ProductResponse>> SearchProduct(string fieldName, string fieldValue)
         {
-            var query = CreateQuery();
-            var filterService = new EntityFilterService<ProductEntity>(query);
-            var parameter = Expression.Parameter(typeof(ProductEntity), fieldName);
-            var property = Expression.Property(parameter, fieldName);
-
-            object convertedValue;
-            if (fieldName.ToLower() == "productid")
+            try
             {
-                convertedValue = Guid.Parse(fieldValue);
+                var query = CreateQuery();
+                var filterService = new EntityFilterService<ProductEntity>(query);
+                var parameter = Expression.Parameter(typeof(ProductEntity), fieldName);
+                var property = Expression.Property(parameter, fieldName);
+
+                object convertedValue;
+                if (fieldName.ToLower() == "productid")
+                {
+                    convertedValue = Guid.Parse(fieldValue);
+                }
+                else
+                {
+                    convertedValue = Convert.ChangeType(fieldValue, property.Type);
+                }
+
+                var constant = Expression.Constant(convertedValue);
+                var equals = Expression.Equal(property, constant);
+                var lambada = Expression.Lambda<Func<ProductEntity, bool>>(equals, parameter);
+
+                var productResult = _crudServices.SearchProductInDB(filterService, lambada);
+
+                if(productResult.Result)
+                {
+                    var productMap = _mapper.Map<List<ProductResponse>>(productResult.Data);
+
+                    return new ApiResponse<List<ProductResponse>>
+                    {
+                        Result = true,
+                        Data = productMap
+                    };
+                }
+                else
+                {
+                    return new ApiResponse<List<ProductResponse>>
+                    {
+                        Result = false,
+                        ErrorMessage = productResult.ErrorMessage
+                    };
+                }
             }
-            else
+            catch (Exception ex)
             {
-                convertedValue = Convert.ChangeType(fieldValue, property.Type);
+                return new ApiResponse<List<ProductResponse>>
+                {
+                    Result = false,
+                    ErrorMessage = ex.Message
+                };
             }
-
-            var constant = Expression.Constant(convertedValue);
-            var equals = Expression.Equal(property, constant);
-            var lambada = Expression.Lambda<Func<ProductEntity, bool>>(equals, parameter);
-
-            var productResult = _crudServices.SearchProductInDB(filterService, lambada);
-
-            var productMap = _mapper.Map<List<ProductResponse>>(productResult);
-            return productMap;
         }
     }
 }

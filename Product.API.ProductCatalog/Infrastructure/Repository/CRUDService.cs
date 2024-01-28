@@ -313,11 +313,26 @@ namespace Product.API.ProductCatalog.Infrastructure.Repository
             return query;
         }
 
-        public List<ProductEntity> SearchProductInDB(EntityFilterService<ProductEntity> filterService, Expression<Func<ProductEntity, bool>> lambada)
+        public ApiResponse<List<ProductEntity>> SearchProductInDB(EntityFilterService<ProductEntity> filterService, Expression<Func<ProductEntity, bool>> lambada)
         {
-            var query = filterService.ApplyFilter(lambada);
-            var productResult = query.ToList();
-            return productResult;
+            try
+            {
+                var query = filterService.ApplyFilter(lambada);
+                var productResult = query.ToList();
+                return new ApiResponse<List<ProductEntity>>
+                {
+                    Result = true,
+                    Data = productResult
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<List<ProductEntity>>
+                {
+                    Result = false,
+                    ErrorMessage = ex.Message
+                };
+            }
         }
     }
 }

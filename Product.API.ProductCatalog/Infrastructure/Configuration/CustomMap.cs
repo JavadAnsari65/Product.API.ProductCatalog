@@ -11,38 +11,7 @@ namespace Product.API.ProductCatalog.Infrastructure.Configuration
     public class CustomMap:Profile
     {
         public CustomMap()
-        {
-            //CreateMap<ProductEntity, ProductResponse>()
-            //    .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))
-            //    .ReverseMap();
-
-            //CreateMap<ProductEntity, ProductRequest>()
-            //    .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))
-            //    .ReverseMap();
-
-            //CreateMap<ProductRequest, ProductResponse>()
-            //    .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))
-            //    .ReverseMap();
-
-            //CreateMap<ImageEntity, ImageRequest>().ReverseMap();
-            //CreateMap<ImageEntity, ImageResponse>().ReverseMap();
-
-            //CreateMap<ProductEmbeded, List<ImageEntity>>().ReverseMap();
-
-            //#########################################################################################################
-
-            //CreateMap(typeof(ApiResponse<>), typeof(ProductResponse)).ReverseMap();
-            //CreateMap(typeof(ApiResponse<>), typeof(ProductEntity)).ReverseMap();
-
-
-            //CreateMap<ProductRequest, ProductResponse>()
-            //    .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))
-            //    .ReverseMap();
-
-            //CreateMap<ImageEntity, DTO.ExternalAPI.Request.ImageRequest>().ReverseMap();
-            //CreateMap<ImageEntity, DTO.ExternalAPI.Response.ImageResponse>().ReverseMap();
-
-            
+        {            
             CreateMap<ProductEntity, DTO.ExternalAPI.Response.ProductResponse>()
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))
                 .ReverseMap();
@@ -63,21 +32,22 @@ namespace Product.API.ProductCatalog.Infrastructure.Configuration
             CreateMap<ProductEmbeded, DTO.ExternalAPI.Embeded.ProductEmbeded>().ReverseMap();
 
 
-            //########################################################
+            //###############################################################################
 
             CreateMap<ProductRequest, DTO.ExternalAPI.Request.ProductRequest>()
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))
                 .ReverseMap();
 
-            CreateMap<ImageRequest, DTO.ExternalAPI.Request.ImageRequest>().ReverseMap();
-
             CreateMap<ProductEntity, ProductRequest>()
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images))
                 .ReverseMap();
 
-            //#######################################################
+            CreateMap<ProductEmbeded, ImageEntity>().ReverseMap();   //Mohem
+
+            //##############################################################################
 
             CreateMap(typeof(ApiResponse<>), typeof(ProductResponse)).ReverseMap();  //OK
+            CreateMap(typeof(ApiResponse<List<ProductEntity>>), typeof(List<ProductResponse>)).ReverseMap();  //OK
 
             //##############################################################################
 

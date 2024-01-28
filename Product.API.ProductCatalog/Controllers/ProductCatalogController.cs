@@ -32,14 +32,29 @@ namespace Product.API.ProductCatalog.Controllers
             }
         }
 
-        
-        //[HttpGet]
-        //public ActionResult<List<DTO.ExternalAPI.Response.ProductResponse>> SearchProduct(string fieldName, string fieldValue)
-        //{
-        //    var productResult = _productCatalog.SearchProduct(fieldName, fieldValue);
-        //    return Ok(productResult);
-        //}
-        
+
+        [HttpGet]
+        public ActionResult<List<DTO.ExternalAPI.Response.ProductResponse>> SearchProduct(string fieldName, string fieldValue)
+        {
+            try
+            {
+                var productResult = _productCatalog.SearchProduct(fieldName, fieldValue);
+                
+                if(productResult.Result)
+                {
+                    return Ok(productResult.Data);
+                }
+                else
+                {
+                    return BadRequest(productResult.ErrorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public ActionResult<DTO.ExternalAPI.Response.ProductResponse> AddProduct(DTO.ExternalAPI.Request.ProductRequest product)
         {
@@ -94,12 +109,14 @@ namespace Product.API.ProductCatalog.Controllers
 
 
         [HttpDelete]
-        public ActionResult<DTO.ExternalAPI.Response.ProductResponse> DeleteProduct(DTO.ExternalAPI.Request.ProductIdRequest product)
+        //public ActionResult<DTO.ExternalAPI.Response.ProductResponse> DeleteProduct(DTO.ExternalAPI.Request.ProductIdRequest product)
+        public ActionResult<DTO.ExternalAPI.Response.ProductResponse> DeleteProduct(Guid productId)
         {
             try
             {
-                var mapInternalPId = _mapper.Map<ProductIdRequest>(product);
-                var result = _productCatalog.DeleteProduct(mapInternalPId);
+                //var mapInternalPId = _mapper.Map<ProductIdRequest>(product);
+                //var result = _productCatalog.DeleteProduct(mapInternalPId);
+                var result = _productCatalog.DeleteProduct(productId);
 
                 if(result.Result)
                 {
