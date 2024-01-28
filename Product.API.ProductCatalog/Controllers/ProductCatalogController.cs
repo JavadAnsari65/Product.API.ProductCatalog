@@ -66,14 +66,32 @@ namespace Product.API.ProductCatalog.Controllers
 
         }
 
-        /*
         [HttpPut]
-        public ActionResult<ProductResponse> UpdateProduct(Guid productId, ProductResponse product)
+        public ActionResult<DTO.ExternalAPI.Response.ProductResponse> UpdateProduct(Guid productId, DTO.ExternalAPI.Request.ProductRequest product)
         {
-            var updateProduct = _productCatalog.UpdateProduct(productId, product);
-            return Ok(updateProduct);
+            try
+            {
+                var mapInternalProduct = _mapper.Map<ProductRequest>(product);
+
+                var updateProduct = _productCatalog.UpdateProduct(productId, mapInternalProduct);
+
+                if (updateProduct.Result)
+                {
+                    var mapExternalProduct = _mapper.Map<DTO.ExternalAPI.Response.ProductResponse>(updateProduct.Data);
+                    return Ok(mapExternalProduct);
+                }
+                else
+                {
+                    return BadRequest(updateProduct.ErrorMessage);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-        */
+
 
         [HttpDelete]
         public ActionResult<DTO.ExternalAPI.Response.ProductResponse> DeleteProduct(DTO.ExternalAPI.Request.ProductIdRequest product)

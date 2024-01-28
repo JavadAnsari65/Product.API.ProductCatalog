@@ -66,7 +66,8 @@ namespace Product.API.ProductCatalog.Application
 
                     // بارگیری و ذخیره تصاویر بیشتر در جدول Images 
                     var additionalImages = new List<ImageEntity>();
-                    foreach (var image in product.Images.Images)
+                    //foreach (var image in product.Images.Images)  //for use ProductEmbeded
+                    foreach (var image in product.Images)
                     {
                         //Save Image with base64
                         var base64 = image.ImageUrl.Split(',')[1];
@@ -134,27 +135,53 @@ namespace Product.API.ProductCatalog.Application
 
         }
 
-        public ProductResponse UpdateProduct(Guid productId, ProductResponse product)
+        public ApiResponse<ProductResponse> UpdateProduct(Guid productId, ProductRequest product)
         {
-            var existProduct = _crudServices.FindProductByIdInDB(productId);
-            if (existProduct != null)
+            try
             {
-                if (product.ProductId==productId)
-                {
-                    var resultUpdate = _crudServices.UpdateProductInDB(existProduct, product);
+                var existProduct = _crudServices.FindProductByIdInDB(productId);
 
-                    if (resultUpdate == "UpdateSuccess")
-                        return product;
-                    else if (resultUpdate == "UpdateFailed")
-                        return GetErrorResponse("Error: Update Product is failure");
+                if(existProduct.Result)
+                {
+                    var mapEntityProduct = _mapper.Map<ProductEntity>(product);
+                    var resultUpdate = _crudServices.UpdateProductInDB(existProduct.Data, mapEntityProduct);
+
+                    if (resultUpdate.Result)
+                    {
+                        var mapResponseProduct = _mapper.Map<ProductResponse>(resultUpdate.Data);
+
+                        return new ApiResponse<ProductResponse>
+                        {
+                            Result = true,
+                            Data = mapResponseProduct
+                        };
+                    }
+                    else
+                    {
+                        return new ApiResponse<ProductResponse>
+                        {
+                            Result = false,
+                            ErrorMessage = resultUpdate.ErrorMessage
+                        };
+                    }
                 }
                 else
                 {
-                    return GetErrorResponse("Error: ProductId is not like to ProuctId fieldSearch");
+                    return new ApiResponse<ProductResponse>
+                    {
+                        Result = false,
+                        ErrorMessage = existProduct.ErrorMessage
+                    };
                 }
             }
- 
-            return GetErrorResponse("Error: Unexpected condition");
+            catch (Exception ex)
+            {
+                return new ApiResponse<ProductResponse>
+                {
+                    Result = false,
+                    ErrorMessage = ex.Message
+                };
+            }
         }
 
 
@@ -165,9 +192,9 @@ namespace Product.API.ProductCatalog.Application
                 var productId = delProduct.ProductId;
                 var foundProduct = _crudServices.FindProductByIdInDB(productId);
 
-                if(foundProduct != null)
+                if(foundProduct.Result)
                 {
-                    var product = _mapper.Map<ProductEntity>(foundProduct);
+                    var product = _mapper.Map<ProductEntity>(foundProduct.Data);
                     var result = _crudServices.DeleteProductOfDB(product);
 
                     if (result.Result)

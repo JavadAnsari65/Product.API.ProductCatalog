@@ -1,5 +1,4 @@
 ﻿using Product.API.ProductCatalog.DTO.InternalAPI.Embeded;
-using Product.API.ProductCatalog.Infrastructure.Entities;
 
 namespace Product.API.ProductCatalog.DTO.InternalAPI.Response
 {
