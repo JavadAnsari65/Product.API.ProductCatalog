@@ -23,7 +23,6 @@ namespace Product.API.ProductCatalog.Application
             _crudServices = addService;
         }
 
-        //public ApiResponse<List<ProductEntity>> GetAllProduct()
         public ApiResponse<List<ProductResponse>> GetAllProduct()
         {
             try
@@ -66,7 +65,6 @@ namespace Product.API.ProductCatalog.Application
 
                     // بارگیری و ذخیره تصاویر بیشتر در جدول Images 
                     var additionalImages = new List<ImageEntity>();
-                    //foreach (var image in product.Images.Images)  //for use ProductEmbeded
                     foreach (var image in product.Images)
                     {
                         //Save Image with base64
@@ -184,13 +182,10 @@ namespace Product.API.ProductCatalog.Application
             }
         }
 
-
-        //public ApiResponse<ProductResponse> DeleteProduct(ProductIdRequest delProduct)
         public ApiResponse<ProductResponse> DeleteProduct(Guid productId)
         {
             try
             {
-                //var productId = delProduct.ProductId;
                 var foundProduct = _crudServices.FindProductByIdInDB(productId);
 
                 if(foundProduct.Result)

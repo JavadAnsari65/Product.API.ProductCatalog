@@ -13,6 +13,5 @@ namespace Product.API.ProductCatalog.DTO.ExternalAPI.Response
         public DateTime UpdateDate { get; set; }
         public bool IsApproved { get; set; }
         public List<ProductEmbeded> Images { get; set; }
-        //public ProductEmbeded Images { get; set; }
     }
 }

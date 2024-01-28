@@ -109,13 +109,10 @@ namespace Product.API.ProductCatalog.Controllers
 
 
         [HttpDelete]
-        //public ActionResult<DTO.ExternalAPI.Response.ProductResponse> DeleteProduct(DTO.ExternalAPI.Request.ProductIdRequest product)
         public ActionResult<DTO.ExternalAPI.Response.ProductResponse> DeleteProduct(Guid productId)
         {
             try
             {
-                //var mapInternalPId = _mapper.Map<ProductIdRequest>(product);
-                //var result = _productCatalog.DeleteProduct(mapInternalPId);
                 var result = _productCatalog.DeleteProduct(productId);
 
                 if(result.Result)

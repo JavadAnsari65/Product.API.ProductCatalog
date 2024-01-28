@@ -99,8 +99,6 @@ namespace Product.API.ProductCatalog.Infrastructure.Repository
                         {
                             Caption = image.Caption,
                             ImageUrl = randName + ".png",
-
-                            //ProductId = product.ProductId,
                         };
 
                         product.Images.Add(imageEntity);
@@ -134,35 +132,6 @@ namespace Product.API.ProductCatalog.Infrastructure.Repository
                     ErrorMessage = ex.Message
                 };
             }
-
-
-
-            //// حذف تصاویر فعلی محصول
-            //product.Images.Clear();
-
-            //// افزودن تصاویر جدید به محصول
-            //if (images != null && images.Images != null)
-            //{
-            //    foreach (var imageRequest in images.Images)
-            //    {
-            //        var base64 = imageRequest.ImageUrl.Split(',')[1];
-            //        var bytes = System.Convert.FromBase64String(base64);
-            //        var randName = Guid.NewGuid().ToString();
-
-            //        var imageEntity = new ImageEntity
-            //        {
-            //            Caption = imageRequest.Caption,
-            //            ImageUrl = randName + ".png",
-            //        };
-
-            //        product.Images.Add(imageEntity);
-
-            //        //Save Image on Server
-            //        var path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",
-            //            StaticUrls.ProductImageUrl + randName + ".png");
-            //        System.IO.File.WriteAllBytes(path, bytes);
-            //    }
-            //}
         }
 
         public ApiResponse<ProductEntity> UpdateProductInDB(ProductEntity existProduct, ProductEntity updatedProduct)
@@ -179,10 +148,9 @@ namespace Product.API.ProductCatalog.Infrastructure.Repository
                 existProduct.IsApproved = updatedProduct.IsApproved;
 
 
-                //##########################################################################
+                //Update Images
 
                 existProduct.Images.Clear();
-
                 if (updatedProduct.Images.Count > 0)
                 {
                     foreach (var image in updatedProduct.Images)
@@ -232,53 +200,6 @@ namespace Product.API.ProductCatalog.Infrastructure.Repository
                     ErrorMessage = ex.Message
                 };
             }
-
-
-
-
-            /*
-            try
-            {
-                // به روزرسانی ویژگی‌های محصول با اطلاعات ارسالی از درخواست
-                existProduct.ProductCatId = updatedProduct.ProductCatId;
-                existProduct.Name = updatedProduct.Name;
-                existProduct.Description = updatedProduct.Description;
-                existProduct.Price = updatedProduct.Price;
-                existProduct.CreateDate = updatedProduct.CreateDate;
-                existProduct.UpdateDate = DateTime.Now;
-                existProduct.IsApproved = updatedProduct.IsApproved;
-
-                // به روزرسانی تصاویر محصول
-                var updateResult = UpdateProductImagesInDB(existProduct, updatedProduct.Images);
-
-                if (updateResult.Result)
-                {
-                    _dbContext.SaveChanges();
-
-                    return new ApiResponse<ProductEntity>
-                    {
-                        Result = true,
-                        Data = updateResult.Data
-                    };
-                }
-                else
-                {
-                    return new ApiResponse<ProductEntity>
-                    {
-                        Result = false,
-                        ErrorMessage = updateResult.ErrorMessage
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ApiResponse<ProductEntity>
-                {
-                    Result = false,
-                    ErrorMessage = ex.Message
-                };
-            }
-            */
         }
         
         public ApiResponse<ProductEntity> DeleteProductOfDB(ProductEntity product)
