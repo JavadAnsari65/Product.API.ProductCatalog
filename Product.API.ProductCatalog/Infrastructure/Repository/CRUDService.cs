@@ -5,7 +5,6 @@ using Product.API.ProductCatalog.DTO.InternalAPI.Embeded;
 using Product.API.ProductCatalog.DTO.InternalAPI.Request;
 using Product.API.ProductCatalog.DTO.InternalAPI.Response;
 using Product.API.ProductCatalog.Extensions.ExtraClasses;
-using Product.API.ProductCatalog.Extensions.SearchClasses;
 using Product.API.ProductCatalog.Infrastructure.Configuration;
 using Product.API.ProductCatalog.Infrastructure.Entities;
 using Product.API.ProductCatalog.wwwroot.StaticFiles;

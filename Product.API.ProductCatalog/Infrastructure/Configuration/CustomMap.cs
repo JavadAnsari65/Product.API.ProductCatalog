@@ -53,8 +53,6 @@ namespace Product.API.ProductCatalog.Infrastructure.Configuration
 
             CreateMap(typeof(ApiResponse<>), typeof(ProductEntity)).ReverseMap();
 
-            //CreateMap<ProductIdRequest, DTO.ExternalAPI.Request.ProductIdRequest>().ReverseMap();
-
         }
 
     }

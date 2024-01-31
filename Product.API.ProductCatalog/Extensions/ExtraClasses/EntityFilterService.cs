@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Product.API.ProductCatalog.Extensions.SearchClasses
+namespace Product.API.ProductCatalog.Extensions.ExtraClasses
 {
     public class EntityFilterService<T> where T : class
     {
