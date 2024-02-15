@@ -24,13 +24,5 @@ namespace Product.API.ProductCatalog.Infrastructure.Configuration
 
             base.OnModelCreating(modelBuilder);
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=Product.ProductCatalog;Integrated Security=True; MultipleActiveResultSets=True; Trust Server Certificate=True");
-            }
-        }
     }
 }

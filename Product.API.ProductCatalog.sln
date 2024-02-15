@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Product.API.ProductCatalog", "Product.API.ProductCatalog\Product.API.ProductCatalog.csproj", "{556F185E-4A8D-4A0C-B809-7AA657F2C9CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Product.API.ProductCatalog.Test", "Product.API.ProductCatalog.Test\Product.API.ProductCatalog.Test.csproj", "{31715E40-5D88-4714-BA74-E5546880D766}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Product.API.ProductCatalog.Test", "Product.API.ProductCatalog.Test\Product.API.ProductCatalog.Test.csproj", "{31715E40-5D88-4714-BA74-E5546880D766}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

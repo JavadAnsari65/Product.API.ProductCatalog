@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Product.API.ProductCatalog.Application;
 using Product.API.ProductCatalog.Infrastructure.Configuration;
 using Product.API.ProductCatalog.Infrastructure.Repository;
@@ -7,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 //Add DbContext
-builder.Services.AddDbContext<ProductDbContext>();
+builder.Services.AddDbContext<ProductDbContext>(x=>x.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
 
 //Add AutoMapper
 builder.Services.AddAutoMapper(typeof(CustomMap));
