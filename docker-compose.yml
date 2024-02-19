@@ -1,0 +1,48 @@
+version: '3.4'
+
+services:
+  webapi:
+    image: mywebapi
+    build:
+      context: .
+      dockerfile: Product.API.ProductCatalog/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+
+  db:
+    image: "mcr.microsoft.com/mssql/server"
+    environment:
+      SA_PASSWORD: "Sqlserver@1041"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+
+
+
+# version: '3.8'
+
+# services:
+
+#   web_api:
+#     image: productcatalog_api_image   #Replace this with the actual name of your Docker image if different.
+#     build: 
+#       context: .
+#       dockerfile: Dockerfile        #Chon Ghablan build Gereftim , Image ro Sakhtim Dige Ino Nemikhad va Be Jash ye esm vase container mizarim
+#     container_name: productcatalog_api_container
+#     ports:
+#       - "80:80"
+#     environment:
+#       - ASPNETCORE_ENVIRONMENT=Development
+#       # - ConnectionStrings__DbConnection=Server=db;Database=MyDatabase;User=sa;Password=Sqlserver@1041;
+#     depends_on:
+#       - database
+
+#   database:
+#     image: "mcr.microsoft.com/mssql/server"
+#     environment:
+#       SA_PASSWORD: "Sqlserver@1041"
+#       ACCEPT_EULA: "Y"
+#     ports:
+#       - "1433:1433"

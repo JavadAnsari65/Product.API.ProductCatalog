@@ -29,11 +29,15 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+// Configure the HTTP request pipeline For Dockerization
+app.UseSwagger();
+app.UseSwaggerUI();
 
 //Add app StaticFiles
 app.UseStaticFiles();
